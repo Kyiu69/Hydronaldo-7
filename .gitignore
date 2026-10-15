@@ -8,4 +8,9 @@ mortal.jpg
 putasso.jpg
 triste.jpg
 Untitled-1.py
-
+.venv/
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec
