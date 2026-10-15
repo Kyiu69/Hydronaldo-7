@@ -3,11 +3,24 @@ from tkinter import messagebox
 import threading
 import time
 import os
+import sys
 import pygame
 import pystray
 
 from PIL import Image, ImageTk
 from pystray import MenuItem as item
+
+
+def caminho_recurso(nome_arquivo):
+    """Retorna o caminho correto para um recurso, no Python ou no executável."""
+    if getattr(sys, "frozen", False):
+        # Pasta temporária/de recursos criada pelo PyInstaller.
+        pasta_base = sys._MEIPASS
+    else:
+        # Pasta onde este arquivo .py está salvo.
+        pasta_base = os.path.dirname(os.path.abspath(__file__))
+
+    return os.path.join(pasta_base, nome_arquivo)
 
 
 # ============================================================
@@ -33,11 +46,13 @@ def tocar_som(nome_arquivo):
     Carrega e toca um arquivo de áudio.
     """
 
-    print("Tentando tocar:", nome_arquivo)
-    print("Arquivo existe?", os.path.exists(nome_arquivo))
+    arquivo = caminho_recurso(nome_arquivo)
+
+    print("Tentando tocar:", arquivo)
+    print("Arquivo existe?", os.path.exists(arquivo))
 
     try:
-        pygame.mixer.music.load(nome_arquivo)
+        pygame.mixer.music.load(arquivo)
 
         print("Arquivo carregado com sucesso!")
 
@@ -94,7 +109,7 @@ original_pil_images = {}
 for chave, caminho in image_definitions.items():
 
     try:
-        original_pil_images[chave] = Image.open(caminho)
+        original_pil_images[chave] = Image.open(caminho_recurso(caminho))
 
     except FileNotFoundError:
 
@@ -836,13 +851,13 @@ def criar_bandeja():
     try:
 
         imagem_icone = Image.open(
-            "cristiano1.ico"
+            caminho_recurso("cristiano1.ico")
         )
 
     except FileNotFoundError:
 
         imagem_icone = Image.open(
-            "cristiano.jpg"
+            caminho_recurso("cristiano.jpg")
         ).resize(
             (64, 64)
         )
